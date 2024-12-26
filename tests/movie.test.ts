@@ -59,6 +59,68 @@ describe('Movie API', () => {
     expect(response.status).toBe(200);
     expect(response.body.length).toBe(1);
   });
+
+  /**
+   * Test updating a movie
+   */
+  it('should update a movie', async () => {
+    const movie = await Movie.create({
+      title: 'Old Title',
+      genre: 'Action',
+      rating: 7.0,
+      streamingLink: 'https://test.com/old-movie'
+    });
+
+    const response = await request(app)
+      .put(`/movies/${movie._id}`)
+      .set('x-user-role', 'admin')
+      .send({
+        title: 'Updated Title',
+        rating: 8.0
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.title).toBe('Updated Title');
+    expect(response.body.rating).toBe(8.0);
+  });
+
+  /**
+   * Test deleting a movie
+   */
+  it('should delete a movie', async () => {
+    const movie = await Movie.create({
+      title: 'To Be Deleted',
+      genre: 'Drama',
+      rating: 6.5,
+      streamingLink: 'https://test.com/delete-movie'
+    });
+
+    const response = await request(app)
+      .delete(`/movies/${movie._id}`)
+      .set('x-user-role', 'admin');
+
+    expect(response.status).toBe(200);
+
+    const deletedMovie = await Movie.findById(movie._id);
+    expect(deletedMovie).toBeNull();
+  });
+
+  /**
+   * Test unauthorized access
+   */
+  it('should not allow non-admin to create a movie', async () => {
+    const response = await request(app)
+      .post('/movies')
+      .set('x-user-role', 'user') // Non-admin role
+      .send({
+        title: 'Unauthorized Movie',
+        genre: 'Comedy',
+        rating: 5.0,
+        streamingLink: 'https://test.com/unauthorized-movie'
+      });
+
+    expect(response.status).toBe(403); // Expecting forbidden status
+  });
 });
 
 afterAll(async () => {
