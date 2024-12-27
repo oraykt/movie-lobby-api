@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose'
 
 /**
  * Interface representing a Movie document in MongoDB
@@ -25,6 +25,6 @@ const MovieSchema: Schema = new Schema({
   genre: { type: String, required: true },
   rating: { type: Number, required: true, min: 0, max: 10 },
   streamingLink: { type: String, required: false }
-});
+})
 
-export default mongoose.model<IMovie>('Movie', MovieSchema); 
+export default mongoose.model<IMovie>('Movie', MovieSchema)

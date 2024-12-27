@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import Movie, { IMovie } from '../models/Movie';
+import { Request, Response } from 'express'
+import Movie from '../models/Movie'
 
 /**
  * Retrieves all movies from the database
@@ -9,12 +9,13 @@ import Movie, { IMovie } from '../models/Movie';
  */
 export const getAllMovies = async (req: Request, res: Response): Promise<void> => {
   try {
-    const movies = await Movie.find();
-    res.json(movies);
+    const movies = await Movie.find()
+    res.json(movies)
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching movies' });
+    console.error('Error fetching movies:', error)
+    res.status(500).json({ message: 'Error fetching movies' })
   }
-};
+}
 
 /**
  * Searches for movies by title or genre
@@ -24,18 +25,19 @@ export const getAllMovies = async (req: Request, res: Response): Promise<void> =
  */
 export const searchMovies = async (req: Request, res: Response): Promise<void> => {
   try {
-    const query = req.query.q as string;
+    const query = req.query.q as string
     const movies = await Movie.find({
       $or: [
         { title: { $regex: query, $options: 'i' } },
         { genre: { $regex: query, $options: 'i' } }
       ]
-    });
-    res.json(movies);
+    })
+    res.json(movies)
   } catch (error) {
-    res.status(500).json({ message: 'Error searching movies' });
+    console.error('Error searching movies:', error)
+    res.status(500).json({ message: 'Error searching movies' })
   }
-};
+}
 
 /**
  * Adds a new movie to the database
@@ -45,13 +47,14 @@ export const searchMovies = async (req: Request, res: Response): Promise<void> =
  */
 export const addMovie = async (req: Request, res: Response): Promise<void> => {
   try {
-    const movie = new Movie(req.body);
-    await movie.save();
-    res.status(201).json(movie);
+    const movie = new Movie(req.body)
+    await movie.save()
+    res.status(201).json(movie)
   } catch (error) {
-    res.status(400).json({ message: 'Error adding movie' });
+    console.error('Error adding movie:', error)
+    res.status(400).json({ message: 'Error adding movie' })
   }
-};
+}
 
 /**
  * Updates an existing movie's information
@@ -61,16 +64,17 @@ export const addMovie = async (req: Request, res: Response): Promise<void> => {
  */
 export const updateMovie = async (req: Request, res: Response): Promise<void> => {
   try {
-    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const movie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true })
     if (!movie) {
-      res.status(404).json({ message: 'Movie not found' });
-      return;
+      res.status(404).json({ message: 'Movie not found' })
+      return
     }
-    res.json(movie);
+    res.json(movie)
   } catch (error) {
-    res.status(400).json({ message: 'Error updating movie' });
+    console.error('Error updating movie:', error)
+    res.status(400).json({ message: 'Error updating movie' })
   }
-};
+}
 
 /**
  * Deletes a movie from the database
@@ -80,13 +84,14 @@ export const updateMovie = async (req: Request, res: Response): Promise<void> =>
  */
 export const deleteMovie = async (req: Request, res: Response): Promise<void> => {
   try {
-    const movie = await Movie.findByIdAndDelete(req.params.id);
+    const movie = await Movie.findByIdAndDelete(req.params.id)
     if (!movie) {
-      res.status(404).json({ message: 'Movie not found' });
-      return;
+      res.status(404).json({ message: 'Movie not found' })
+      return
     }
-    res.json({ message: 'Movie deleted successfully' });
+    res.json({ message: 'Movie deleted successfully' })
   } catch (error) {
-    res.status(400).json({ message: 'Error deleting movie' });
+    console.error('Error deleting movie:', error)
+    res.status(400).json({ message: 'Error deleting movie' })
   }
-}; 
+}
