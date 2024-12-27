@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import movieRoutes from './routes/movieRoutes'
 import dotenv from 'dotenv'
+import redis from './config/redis'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -47,5 +48,20 @@ app.use(express.json())
 
 // Movie routes
 app.use('/', movieRoutes)
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 4000
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
+  })
+}
+
+redis.on('connect', () => {
+  console.log('Connected to Redis')
+})
+
+redis.on('error', (err) => {
+  console.error('Redis connection error:', err)
+})
 
 export default app

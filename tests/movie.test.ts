@@ -3,23 +3,26 @@ import app from '../src/app'
 import Movie from '../src/models/Movie'
 import mongoose from 'mongoose'
 import * as http from 'http'
+import redis from '../src/config/redis'
 
-jest.setTimeout(30000) // Database connection takes time
+jest.setTimeout(60000) // Increase timeout to 60 seconds for all tests
 
 let server: http.Server
 
 beforeAll((done) => {
-  server = app.listen(4000, () => {
-    console.log('Test server running on port 4000')
+  const TEST_PORT = 4001
+  server = app.listen(TEST_PORT, () => {
+    console.log(`Test server running on port ${TEST_PORT}`)
     done()
   })
 })
 
 /**
- * Clear the database before each test
+ * Clear the database and Redis cache before each test
  */
 beforeEach(async () => {
   await Movie.deleteMany({})
+  await redis.flushall()
 })
 
 /**
@@ -122,9 +125,64 @@ describe('Movie API', () => {
 
     expect(response.status).toBe(403) // Expecting forbidden status
   })
+
+  /**
+   * Test Redis caching
+   */
+  it('should cache movie data in Redis', async () => {
+    // Create a movie
+    await request(app)
+      .post('/movies')
+      .set('x-user-role', 'admin')
+      .send({
+        title: 'Cached Movie',
+        genre: 'Thriller',
+        rating: 7.5,
+        streamingLink: 'https://test.com/cached-movie'
+      })
+
+    // Fetch movies to trigger caching
+    const response = await request(app).get('/movies')
+    console.log('Response status:', response.status)
+    console.log('Response body:', response.body)
+
+    // Check if the data is cached
+    const cachedMovies = await redis.get('movies:all')
+    console.log('Cached movies:', cachedMovies)
+    expect(cachedMovies).not.toBeNull()
+
+    const movies = JSON.parse(cachedMovies || '[]')
+    expect(movies.length).toBe(1)
+    expect(movies[0].title).toBe('Cached Movie')
+  })
+
+  /**
+   * Test Redis cache invalidation
+   */
+  it('should invalidate cache after movie deletion', async () => {
+    const movie = await Movie.create({
+      title: 'To Be Cached',
+      genre: 'Drama',
+      rating: 6.5,
+      streamingLink: 'https://test.com/to-be-cached'
+    })
+
+    // Fetch movies to trigger caching
+    await request(app).get('/movies')
+
+    // Delete the movie
+    await request(app)
+      .delete(`/movies/${movie._id}`)
+      .set('x-user-role', 'admin')
+
+    // Check if the cache is invalidated
+    const cachedMovies = await redis.get('movies:all')
+    expect(cachedMovies).toBeNull()
+  })
 })
 
 afterAll(async () => {
   await mongoose.connection.close()
   server.close()
+  await redis.quit()
 })
