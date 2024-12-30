@@ -3,6 +3,8 @@ import mongoose from 'mongoose'
 import movieRoutes from './routes/movieRoutes'
 import dotenv from 'dotenv'
 import redis from './config/redis'
+import swaggerUi from 'swagger-ui-express'
+import specs from './config/swagger'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -48,6 +50,9 @@ app.use(express.json())
 
 // Movie routes
 app.use('/', movieRoutes)
+
+// Add Swagger UI route before your other routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
 
 if (require.main === module) {
   const PORT = process.env.PORT || 4000

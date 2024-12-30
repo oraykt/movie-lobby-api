@@ -3,6 +3,25 @@ import { getMovies, createMovie, updateMovie, deleteMovie, searchMovies } from '
 
 const router = express.Router()
 
+/**
+ * @swagger
+ * /movies:
+ *   get:
+ *     summary: Get all movies
+ *     description: Retrieve a list of all movies from the database
+ *     tags: [Movies]
+ *     responses:
+ *       200:
+ *         description: List of movies retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Movie'
+ *       500:
+ *         description: Server error while fetching movies
+ */
 router.get('/movies', async (req, res) => {
   console.log('GET /movies - Query:', JSON.stringify(req.query))
   try {
@@ -14,6 +33,36 @@ router.get('/movies', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /search:
+ *   get:
+ *     summary: Search movies
+ *     description: Search movies by title and/or genre
+ *     tags: [Movies]
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Movie title to search for
+ *       - in: query
+ *         name: genre
+ *         schema:
+ *           type: string
+ *         description: Movie genre to search for
+ *     responses:
+ *       200:
+ *         description: Search results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Movie'
+ *       500:
+ *         description: Server error while searching movies
+ */
 router.get('/search', async (req, res) => {
   console.log('GET /search - Query:', JSON.stringify(req.query))
   const { title, genre } = req.query
@@ -26,6 +75,53 @@ router.get('/search', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /movies:
+ *   post:
+ *     summary: Create a new movie
+ *     description: Add a new movie to the database (Admin only)
+ *     tags: [Movies]
+ *     security:
+ *       - adminAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - genre
+ *               - rating
+ *               - streamingLink
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "The Matrix"
+ *               genre:
+ *                 type: string
+ *                 example: "Sci-Fi"
+ *               rating:
+ *                 type: number
+ *                 example: 8.7
+ *               streamingLink:
+ *                 type: string
+ *                 example: "https://example.com/watch/matrix"
+ *     responses:
+ *       201:
+ *         description: Movie created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Movie'
+ *       401:
+ *         description: Unauthorized - Missing admin header
+ *       403:
+ *         description: Forbidden - Invalid admin credentials
+ *       500:
+ *         description: Server error while creating movie
+ */
 router.post('/movies', async (req, res) => {
   console.log('POST /movies - Body:', JSON.stringify(req.body))
   if (req.headers['x-user-role'] !== 'admin') {
@@ -40,6 +136,57 @@ router.post('/movies', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /movies/{id}:
+ *   put:
+ *     summary: Update a movie
+ *     description: Update an existing movie's information (Admin only)
+ *     tags: [Movies]
+ *     security:
+ *       - adminAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Movie ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Updated Movie Title"
+ *               genre:
+ *                 type: string
+ *                 example: "Action"
+ *               rating:
+ *                 type: number
+ *                 example: 9.0
+ *               streamingLink:
+ *                 type: string
+ *                 example: "https://example.com/watch/updated-movie"
+ *     responses:
+ *       200:
+ *         description: Movie updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Movie'
+ *       401:
+ *         description: Unauthorized - Missing admin header
+ *       403:
+ *         description: Forbidden - Invalid admin credentials
+ *       404:
+ *         description: Movie not found
+ *       500:
+ *         description: Server error while updating movie
+ */
 router.put('/movies/:id', async (req, res) => {
   console.log(`PUT /movies/${req.params.id} - Body:`, JSON.stringify(req.body))
   try {
@@ -54,6 +201,34 @@ router.put('/movies/:id', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /movies/{id}:
+ *   delete:
+ *     summary: Delete a movie
+ *     description: Delete a movie from the database (Admin only)
+ *     tags: [Movies]
+ *     security:
+ *       - adminAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Movie ID
+ *     responses:
+ *       200:
+ *         description: Movie deleted successfully
+ *       401:
+ *         description: Unauthorized - Missing admin header
+ *       403:
+ *         description: Forbidden - Invalid admin credentials
+ *       404:
+ *         description: Movie not found
+ *       500:
+ *         description: Server error while deleting movie
+ */
 router.delete('/movies/:id', async (req, res) => {
   console.log(`DELETE /movies/${req.params.id}`)
   try {

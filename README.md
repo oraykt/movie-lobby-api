@@ -11,7 +11,7 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
 - **Role-Based Access Control**: Only admin users can create, update, or delete movies.
 - **Caching**: Movies are cached in Redis for faster retrieval.
 - **Search**: Search movies by title or genre.
-
+- **Swagger Documentation**: API documentation is available at `/api-docs`.
 
 ## Setup
 
@@ -52,6 +52,12 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
    ```
 
 ## API Endpoints
+
+### Swagger Documentation
+
+- **URL**: `/api-docs`
+- **Method**: `GET`
+- **Description**: Access the Swagger UI for API documentation.
 
 ### Create a Movie
 
