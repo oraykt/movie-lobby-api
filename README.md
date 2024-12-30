@@ -58,6 +58,7 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
 - **URL**: `/api-docs`
 - **Method**: `GET`
 - **Description**: Access the Swagger UI for API documentation.
+![Swagger UI](./swagger-ui.png)
 
 ### Create a Movie
 
