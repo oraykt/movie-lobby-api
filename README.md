@@ -6,8 +6,14 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
 
 - **Create Movie**: Add new movies to the database.
 - **Read Movies**: Retrieve a list of all movies.
+- **Search Movies**: Search movies by title or genre.
 - **Update Movie**: Modify existing movie details.
 - **Delete Movie**: Remove movies from the database.
+- **Create Director**: Add new directors to the database.
+- **Read Directors**: Retrieve a list of all directors.
+- **Search Directors**: Search directors by name and genre.
+- **Update Director**: Modify existing director details.
+- **Delete Director**: Remove directors from the database.
 - **Role-Based Access Control**: Only admin users can create, update, or delete movies.
 - **Caching**: Movies are cached in Redis for faster retrieval.
 - **Search**: Search movies by title or genre.
@@ -320,17 +326,33 @@ Returning cached movies
 #### Test Logs
 
 ```text
-Movie API
-    √ should create a new movie (3822 ms)                                                                                                                                                 
-    √ should get all movies (827 ms)                                                                                                                                                      
-    √ should update a movie (1195 ms)                                                                                                                                                     
-    √ should delete a movie (1041 ms)                                                                                                                                                     
-    √ should not allow non-admin to create a movie (271 ms)                                                                                                                               
-    √ should cache movie data in Redis (990 ms)                                                                                                                                           
-    √ should invalidate cache after movie deletion (1138 ms)                                                                                                                              
-      
-Test Suites: 1 passed, 1 total                                                                                                                                                            
-Tests:       7 passed, 7 total
+All tests passed                                                                                                                                                                                                                                          
+
+tests\director.test.ts
+  Director API
+    ✓ should create a new director
+    ✓ should get all directors
+    ✓ should search directors by name and genre
+    ✓ should update a director
+    ✓ should delete a director
+    ✓ should not allow non-admin to create a director
+    ✓ should create a director with movies and populate movies in get request
+    ✓ should cache director data in Redis
+    ✓ should invalidate cache after director update
+tests\movie.test.ts
+  Movie API
+    ✓ should create a new movie
+    ✓ should get all movies
+    ✓ should update a movie
+    ✓ should delete a movie
+    ✓ should not allow non-admin to create a movie
+    ✓ should cache movie data in Redis
+    ✓ should invalidate cache after movie deletion
+
+Test Suites: 2 passed, 2 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        18.317 s
 ```
 
 ## Technologies Used
