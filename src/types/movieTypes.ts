@@ -3,6 +3,7 @@ export interface MovieData {
   genre: string;
   rating: number;
   streamingLink: string;
+  director?: string;
 }
 
 export interface UpdateMovieData {
@@ -10,4 +11,5 @@ export interface UpdateMovieData {
   genre?: string;
   rating?: number;
   streamingLink?: string;
+  director?: string;
 }

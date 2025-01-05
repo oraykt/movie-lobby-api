@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @swagger
- * /search:
+ * /movies/search:
  *   get:
  *     summary: Search movies
  *     description: Search movies by title and/or genre

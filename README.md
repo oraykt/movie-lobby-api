@@ -186,7 +186,7 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
     {
       "message": "Director deleted successfully"
     }
-    ```.
+    ```
 
 ## Movie Endpoints
 
@@ -202,7 +202,12 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
     "title": "Inception",
     "genre": "Sci-Fi",
     "rating": 9.0,
-    "streamingLink": "https://example.com/inception"
+    "streamingLink": "https://example.com/inception",
+    "director": {
+      "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+      "fullName": "Christopher Nolan",
+      "genre": "Sci-Fi"
+    }
   }
   ```
 - **Success Response**:
@@ -214,7 +219,12 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
       "title": "Inception",
       "genre": "Sci-Fi",
       "rating": 9.0,
-      "streamingLink": "https://example.com/inception"
+      "streamingLink": "https://example.com/inception",
+      "director": {
+        "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+        "fullName": "Christopher Nolan",
+        "genre": "Sci-Fi"
+      }
     }
     ```
 
@@ -232,7 +242,12 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
         "title": "Inception",
         "genre": "Sci-Fi",
         "rating": 9.0,
-        "streamingLink": "https://example.com/inception"
+        "streamingLink": "https://example.com/inception",
+        "director": {
+          "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+          "fullName": "Christopher Nolan",
+          "genre": "Sci-Fi"
+        }
       }
     ]
     ```
@@ -259,7 +274,12 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
       "title": "Inception Updated",
       "genre": "Sci-Fi",
       "rating": 9.5,
-      "streamingLink": "https://example.com/inception"
+      "streamingLink": "https://example.com/inception",
+      "director": {
+        "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+        "fullName": "Christopher Nolan",
+        "genre": "Sci-Fi"
+      }
     }
     ```
 
@@ -280,7 +300,12 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
         "title": "Inception",
         "genre": "Sci-Fi",
         "rating": 9.0,
-        "streamingLink": "https://example.com/inception"
+        "streamingLink": "https://example.com/inception",
+        "director": {
+          "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+          "fullName": "Christopher Nolan",
+          "genre": "Sci-Fi"
+        }
       }
     ]
     ```
