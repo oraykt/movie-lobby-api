@@ -51,7 +51,7 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
    npm test
    ```
 
-## API Endpoints
+# API Endpoints
 
 ### Swagger Documentation
 
@@ -59,6 +59,130 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
 - **Method**: `GET`
 - **Description**: Access the Swagger UI for API documentation.
 ![Swagger UI](./swagger-ui.png)
+
+## Director Endpoints
+
+
+### Create a Director
+
+- **URL**: `/directors`
+- **Method**: `POST`
+- **Headers**: 
+  - `x-user-role`: `admin`
+- **Request Body**:
+  ```json
+  {
+    "fullName": "Christopher Nolan",
+    "genre": "Sci-Fi",
+    "movies": [] 
+  }
+  ```
+- **Success Response**:
+  - **Code**: `201 CREATED`
+  - **Content**: 
+    ```json
+    {
+      "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+      "fullName": "Christopher Nolan",
+      "genre": "Sci-Fi",
+      "movies": [],
+      "createdAt": "2024-03-15T12:00:00.000Z",
+      "updatedAt": "2024-03-15T12:00:00.000Z"
+    }
+    ```
+
+### Search Directors
+
+- **URL**: `/directors/search`
+- **Method**: `GET`
+- **Description**: Returns all directors with their associated movies. Results are cached in Redis for improved performance.
+- **Success Response**:
+  - **Code**: `200 OK`
+  - **Content**: 
+    ```json
+    [
+      {
+        "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+        "fullName": "Christopher Nolan",
+        "genre": "Sci-Fi",
+        "movies": []
+      }
+    ]
+    ```
+
+### Get All Directors
+
+- **URL**: `/directors`
+- **Method**: `GET`
+- **Description**: Returns all directors with their associated movies. Results are cached in Redis for improved performance.
+- **Success Response**:
+  - **Code**: `200 OK`
+  - **Content**: 
+    ```json
+    [
+      {
+        "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+        "fullName": "Christopher Nolan",
+        "genre": "Sci-Fi",
+        "movies": [
+          {
+            "_id": "60d5f9f5f9f5f9f5f9f5f9f6",
+            "title": "Inception",
+            "genre": "Sci-Fi",
+            "rating": 9.0,
+            "streamingLink": "https://example.com/inception"
+          }
+        ],
+        "createdAt": "2024-03-15T12:00:00.000Z",
+        "updatedAt": "2024-03-15T12:00:00.000Z"
+      }
+    ]
+    ```
+
+### Update a Director
+
+- **URL**: `/directors/:id`
+- **Method**: `PUT`
+- **Headers**: 
+  - `x-user-role`: `admin`
+- **Request Body**:
+  ```json
+  {
+    "fullName": "Updated Name",
+    "genre": "Action"
+  }
+  ```
+- **Description**: Updates director information. This operation invalidates the Redis cache.
+- **Success Response**:
+  - **Code**: `200 OK`
+  - **Content**: 
+    ```json
+    {
+      "id": "60d5f9f5f9f5f9f5f9f5f9f5",
+      "fullName": "Updated Name",
+      "genre": "Action",
+      "movies": [],
+      "createdAt": "2024-03-15T12:00:00.000Z",
+      "updatedAt": "2024-03-15T12:00:00.000Z"
+    }
+    ```
+
+### Delete a Director
+
+- **URL**: `/directors/:id`
+- **Method**: `DELETE`
+- **Headers**: 
+  - `x-user-role`: `admin`
+- **Success Response**:
+  - **Code**: `200 OK`
+  - **Content**: 
+    ```json
+    {
+      "message": "Director deleted successfully"
+    }
+    ```.
+
+## Movie Endpoints
 
 ### Create a Movie
 
@@ -135,7 +259,7 @@ A RESTful API for managing a movie lobby system. This API allows for creating, r
 
 ### Search Movies
 
-- **URL**: `/search`
+- **URL**: `/movies/search`
 - **Method**: `GET`
 - **Query Parameters**:
   - `title`: (optional) Filter by movie title

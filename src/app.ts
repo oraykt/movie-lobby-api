@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import redis from './config/redis'
 import swaggerUi from 'swagger-ui-express'
 import specs from './config/swagger'
+import directorRoutes from './routes/directorRoutes'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -49,9 +50,12 @@ mongoose.connect(MONGODB_URI, mongooseOptions)
 app.use(express.json())
 
 // Movie routes
-app.use('/', movieRoutes)
+app.use('/movies', movieRoutes)
 
-// Add Swagger UI route before your other routes
+// Director routes
+app.use('/directors', directorRoutes)
+
+// Add Swagger UI route
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
 
 if (require.main === module) {

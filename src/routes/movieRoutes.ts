@@ -18,12 +18,17 @@ const router = express.Router()
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Movie'
+ *                 allOf:
+ *                   - $ref: '#/components/schemas/Movie'
+ *                   - type: object
+ *                     properties:
+ *                       director:
+ *                         $ref: '#/components/schemas/Director'
  *       500:
  *         description: Server error while fetching movies
  */
-router.get('/movies', async (req, res) => {
-  console.log('GET /movies - Query:', JSON.stringify(req.query))
+router.get('/', async (req, res) => {
+  console.log('GET / - Query:', JSON.stringify(req.query))
   try {
     const movies = await getMovies()
     res.status(200).json(movies)
@@ -59,7 +64,12 @@ router.get('/movies', async (req, res) => {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Movie'
+ *                 allOf:
+ *                   - $ref: '#/components/schemas/Movie'
+ *                   - type: object
+ *                     properties:
+ *                       director:
+ *                         $ref: '#/components/schemas/Director'
  *       500:
  *         description: Server error while searching movies
  */
@@ -98,16 +108,20 @@ router.get('/search', async (req, res) => {
  *             properties:
  *               title:
  *                 type: string
- *                 example: "The Matrix"
+ *                 example: "Inception"
  *               genre:
  *                 type: string
  *                 example: "Sci-Fi"
  *               rating:
  *                 type: number
- *                 example: 8.7
+ *                 example: 9.0
  *               streamingLink:
  *                 type: string
- *                 example: "https://example.com/watch/matrix"
+ *                 example: "https://example.com/inception"
+ *               director:
+ *                 type: string
+ *                 description: Director ID
+ *                 example: "507f1f77bcf86cd799439011"
  *     responses:
  *       201:
  *         description: Movie created successfully
@@ -122,8 +136,8 @@ router.get('/search', async (req, res) => {
  *       500:
  *         description: Server error while creating movie
  */
-router.post('/movies', async (req, res) => {
-  console.log('POST /movies - Body:', JSON.stringify(req.body))
+router.post('/', async (req, res) => {
+  console.log('POST / - Body:', JSON.stringify(req.body))
   if (req.headers['x-user-role'] !== 'admin') {
     return res.status(403).json({ error: 'Forbidden' })
   }
@@ -151,7 +165,6 @@ router.post('/movies', async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *         description: Movie ID
  *     requestBody:
  *       required: true
  *       content:
@@ -161,16 +174,19 @@ router.post('/movies', async (req, res) => {
  *             properties:
  *               title:
  *                 type: string
- *                 example: "Updated Movie Title"
  *               genre:
  *                 type: string
- *                 example: "Action"
  *               rating:
  *                 type: number
- *                 example: 9.0
  *               streamingLink:
  *                 type: string
- *                 example: "https://example.com/watch/updated-movie"
+ *               director:
+ *                 type: string
+ *                 description: Director ID
+ *             example:
+ *               title: "Updated Movie Title"
+ *               rating: 9.5
+ *               director: "507f1f77bcf86cd799439011"
  *     responses:
  *       200:
  *         description: Movie updated successfully
@@ -187,8 +203,8 @@ router.post('/movies', async (req, res) => {
  *       500:
  *         description: Server error while updating movie
  */
-router.put('/movies/:id', async (req, res) => {
-  console.log(`PUT /movies/${req.params.id} - Body:`, JSON.stringify(req.body))
+router.put('/:id', async (req, res) => {
+  console.log(`PUT /${req.params.id} - Body:`, JSON.stringify(req.body))
   try {
     const movie = await updateMovie(req.params.id, req.body)
     if (!movie) {
@@ -229,7 +245,7 @@ router.put('/movies/:id', async (req, res) => {
  *       500:
  *         description: Server error while deleting movie
  */
-router.delete('/movies/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
   console.log(`DELETE /movies/${req.params.id}`)
   try {
     const movie = await deleteMovie(req.params.id)

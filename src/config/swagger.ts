@@ -4,9 +4,9 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Movie API Documentation',
+      title: 'Movie and Director API Documentation',
       version: '1.0.0',
-      description: 'API documentation for the Movie Management System'
+      description: 'API documentation for the Movie and Director Management System'
     },
     servers: [
       {
@@ -34,11 +34,41 @@ const options: swaggerJsdoc.Options = {
             },
             rating: {
               type: 'number',
-              description: 'Rating of the movie'
+              description: 'Rating of the movie (0-10)'
             },
             streamingLink: {
               type: 'string',
               description: 'Streaming link for the movie'
+            },
+            director: {
+              type: 'string',
+              description: 'Reference to director ID',
+              nullable: true
+            }
+          }
+        },
+        Director: {
+          type: 'object',
+          required: ['fullName', 'genre'],
+          properties: {
+            _id: {
+              type: 'string',
+              description: 'Auto-generated director ID'
+            },
+            fullName: {
+              type: 'string',
+              description: "The director's full name"
+            },
+            genre: {
+              type: 'string',
+              description: "The director's preferred genre"
+            },
+            movies: {
+              type: 'array',
+              items: {
+                $ref: '#/components/schemas/Movie'
+              },
+              description: 'List of movies directed by this director'
             }
           }
         }
@@ -48,12 +78,10 @@ const options: swaggerJsdoc.Options = {
           type: 'apiKey',
           in: 'header',
           name: 'x-user-role',
-          description: 'Set this to "admin" to access protected endpoints',
-          example: 'admin'
+          description: 'Set this to "admin" to access protected endpoints'
         }
       }
-    },
-    security: [{ adminAuth: [] }]
+    }
   },
   apis: ['./src/routes/*.ts']
 }

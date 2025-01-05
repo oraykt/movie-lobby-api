@@ -14,6 +14,8 @@ export interface IMovie extends Document {
   rating: number;
   /** Streaming URL where the movie can be watched */
   streamingLink: string;
+  /** Reference to the movie's director */
+  director: mongoose.Types.ObjectId;
 }
 
 /**
@@ -24,7 +26,8 @@ const MovieSchema: Schema = new Schema({
   title: { type: String, required: true },
   genre: { type: String, required: true },
   rating: { type: Number, required: true, min: 0, max: 10 },
-  streamingLink: { type: String, required: false }
+  streamingLink: { type: String, required: false },
+  director: { type: Schema.Types.ObjectId, ref: 'Director', required: false }
 })
 
 export default mongoose.model<IMovie>('Movie', MovieSchema)

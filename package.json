@@ -4,7 +4,7 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "dev": "nodemon -x ts-node src/app.ts",
-    "test": "jest",
+    "test": "jest --runInBand",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"

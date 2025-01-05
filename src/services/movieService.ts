@@ -3,20 +3,27 @@ import Movie from '../models/Movie'
 import { MovieData, UpdateMovieData } from '../types/movieTypes'
 
 export async function getMovies() {
-  const cacheKey = 'movies:all'
-  const cachedMovies = await redis.get(cacheKey)
+  try {
+    const cacheKey = 'movies:all'
+    const cachedMovies = await redis.get(cacheKey)
 
-  if (cachedMovies) {
-    console.log('Returning cached movies')
-    return JSON.parse(cachedMovies)
+    if (cachedMovies) {
+      console.log('Returning cached movies')
+      return JSON.parse(cachedMovies)
+    }
+
+    console.log('Fetching movies from database')
+    const movies = await Movie.find({}).exec()
+    // console.log('Found movies:', movies)
+
+    await redis.set(cacheKey, JSON.stringify(movies), 'EX', 3600)
+    return movies
+  } catch (error) {
+    console.error('Error in getMovies:', error)
+    throw error
   }
-
-  console.log('Fetching movies from database')
-  const movies = await Movie.find()
-  await redis.set(cacheKey, JSON.stringify(movies), 'EX', 3600) // Cache for 1 hour
-
-  return movies
 }
+
 export async function searchMovies(title?: string, genre?: string) {
   const query: { title?: RegExp; genre?: RegExp } = {}
   if (title) query.title = new RegExp(title, 'i') // Case-insensitive search
@@ -27,10 +34,16 @@ export async function searchMovies(title?: string, genre?: string) {
 }
 
 export async function createMovie(movieData: MovieData) {
-  const movie = new Movie(movieData)
-  await movie.save()
-  await redis.del('movies:all') // Invalidate cache
-  return movie
+  try {
+    const movie = new Movie(movieData)
+    await movie.save()
+    // Invalidate cache after creating new movie
+    await redis.del('movies:all')
+    return movie
+  } catch (error) {
+    console.error('Error in createMovie:', error)
+    throw error
+  }
 }
 
 export async function updateMovie(id: string, updateData: UpdateMovieData) {
